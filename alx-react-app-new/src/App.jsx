@@ -1,7 +1,8 @@
-import Header from './Header';
-import MainContent from './MainContent';
-import Footer from './Footer';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import MainContent from './components/MainContent';
 import UserProfile from './components/UserProfile';
+import Counter from './components/Counter';
 
 function App() {
   return (
