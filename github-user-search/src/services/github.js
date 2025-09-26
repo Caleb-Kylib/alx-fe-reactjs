@@ -1,13 +1,7 @@
-import api from "./api";
+// src/services/github.js
+import axios from "axios";
 
-// Search for users by username
-export const searchUsers = async (username) => {
-  const response = await api.get(`/search/users?q=${username}`);
-  return response.data;
-};
-
-// Get details of a single user
 export const getUser = async (username) => {
-  const response = await api.get(`/users/${username}`);
+  const response = await axios.get(`https://api.github.com/users/${username}`);
   return response.data;
 };
