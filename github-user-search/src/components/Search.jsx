@@ -1,10 +1,12 @@
 // src/components/Search.jsx
 import React, { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+import { searchUsers } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
+  const [location, setLocation] = useState("");
+  const [minRepos, setMinRepos] = useState("");
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -12,11 +14,15 @@ function Search() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setUser(null);
+    setResults([]);
 
     try {
-      const data = await fetchUserData(username);
-      setUser(data);
+      const users = await searchUsers({ username, location, minRepos });
+      if (users.length === 0) {
+        setError("Looks like we cant find the user");
+      } else {
+        setResults(users);
+      }
     } catch (err) {
       setError("Looks like we cant find the user");
     } finally {
@@ -25,38 +31,71 @@ function Search() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <form onSubmit={handleSubmit}>
+    <div className="mt-6 max-w-2xl mx-auto">
+      {/* Search Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 bg-white p-6 rounded-2xl shadow-md"
+      >
         <input
           type="text"
-          placeholder="Enter GitHub username..."
+          placeholder="GitHub username (optional)"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          style={{ padding: "8px", width: "250px" }}
+          className="border rounded-lg px-4 py-2"
         />
-        <button type="submit" style={{ marginLeft: "10px", padding: "8px" }}>
+        <input
+          type="text"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="border rounded-lg px-4 py-2"
+        />
+        <input
+          type="number"
+          placeholder="Minimum Repositories"
+          value={minRepos}
+          onChange={(e) => setMinRepos(e.target.value)}
+          className="border rounded-lg px-4 py-2"
+        />
+        <button
+          type="submit"
+          className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+        >
           Search
         </button>
       </form>
 
-      <div style={{ marginTop: "20px" }}>
-        {loading && <p>Loading...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {user && (
-          <div>
-            <img
-              src={user.avatar_url}
-              alt={user.login}
-              width={100}
-              style={{ borderRadius: "50%" }}
-            />
-            <h3>{user.name || "No name provided"}</h3>
-            <p>@{user.login}</p>
-            <a href={user.html_url} target="_blank" rel="noreferrer">
-              View Profile
-            </a>
-          </div>
-        )}
+      {/* Results */}
+      <div className="mt-6">
+        {loading && <p className="text-gray-600">Loading...</p>}
+        {error && <p className="text-red-600">{error}</p>}
+
+        <ul className="space-y-4">
+          {results.map((user) => (
+            <li
+              key={user.id}
+              className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl shadow"
+            >
+              <img
+                src={user.avatar_url}
+                alt={user.login}
+                className="w-16 h-16 rounded-full"
+              />
+              <div>
+                <h2 className="text-lg font-semibold">{user.login}</h2>
+                <a
+                  href={user.html_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  View Profile
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
