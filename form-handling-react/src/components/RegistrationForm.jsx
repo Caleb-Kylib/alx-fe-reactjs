@@ -1,52 +1,40 @@
 import React, { useState } from "react";
 
 const RegistrationForm = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    const { username, email, password } = formData;
-
-    // Basic validation
     if (!username || !email || !password) {
       setError("All fields are required.");
       return;
     }
 
-    // Mock API simulation
-    console.log("User Registered:", formData);
+    console.log("User Registered:", { username, email, password });
     setSuccess("Registration successful!");
-    setFormData({ username: "", email: "", password: "" });
+    setUsername("");
+    setEmail("");
+    setPassword("");
   };
 
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h2>User Registration (Controlled Form)</h2>
+      <h2>User Registration (Controlled Components)</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Username:</label>
           <input
             type="text"
             name="username"
-            value={formData.username}
-            onChange={handleChange}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
 
@@ -55,8 +43,8 @@ const RegistrationForm = () => {
           <input
             type="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -65,8 +53,8 @@ const RegistrationForm = () => {
           <input
             type="password"
             name="password"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 

@@ -19,13 +19,10 @@ const FormikForm = () => {
       .required("Password is required"),
   });
 
-  const onSubmit = (values, { resetForm, setSubmitting }) => {
-    console.log("Formik Form Data:", values);
-    setTimeout(() => {
-      alert("User registered successfully!");
-      resetForm();
-      setSubmitting(false);
-    }, 500);
+  const onSubmit = (values, { resetForm }) => {
+    console.log("Formik Form Submitted:", values);
+    alert("Registration successful!");
+    resetForm();
   };
 
   return (
@@ -36,7 +33,7 @@ const FormikForm = () => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {({ isSubmitting }) => (
+        {() => (
           <Form>
             <div>
               <label>Username:</label>
@@ -56,9 +53,7 @@ const FormikForm = () => {
               <ErrorMessage name="password" component="div" style={{ color: "red" }} />
             </div>
 
-            <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Register"}
-            </button>
+            <button type="submit">Register</button>
           </Form>
         )}
       </Formik>
